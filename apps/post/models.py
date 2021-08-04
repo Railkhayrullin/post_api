@@ -27,11 +27,11 @@ class Comment(models.Model):
                                blank=True, null=True,
                                related_name='comment_children',
                                on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, verbose_name='пост', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, verbose_name='пост', related_name='post_comments', on_delete=models.CASCADE)
     created_at = models.DateTimeField('дата создания', auto_now=True)
 
     def __str__(self):
-        return f"{self.user} - {self.post}"
+        return f"{self.user} - {self.post} - {self.pk}"
 
     class Meta:
         verbose_name = 'комментарий'
