@@ -1,16 +1,28 @@
 from rest_framework import serializers
+
+from post_api.settings import ADD_COMMENTS_TO_POST
 from apps.post.models import Post, Comment
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
-    """Добавление коментариев"""
+    """Добавление коментария"""
     class Meta:
         model = Comment
-        fields = '__all__'
+        exclude = ('level',)
+
+    def validate(self, data):
+        """Валидация комментария и присваивание ему уровня по parent"""
+        if data['parent']:
+            if data['parent'].post != data['post']:
+                raise serializers.ValidationError({'Error': 'Статья родителя комментария не '
+                                                            'совпадает с выбранной статьей!'})
+            else:
+                data['level'] = data['parent'].level + 1
+        return data
 
 
 class PostCommentSerializer(serializers.ModelSerializer):
-    """Вывод коментариев"""
+    """Вывод коментариев для статьи"""
     user = serializers.SlugRelatedField(slug_field='username', read_only=True)
 
     class Meta:
@@ -35,13 +47,10 @@ class PostListSerializer(serializers.ModelSerializer):
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
-    """Вывод конкретной статьи с коментариями"""
+    """Вывод конкретной статьи"""
     author = serializers.SlugRelatedField(slug_field='username', read_only=True)
-    post_comments = PostCommentSerializer(many=True)
-
-    @classmethod
-    def setup_eager_loading(cls, queryset):
-        return queryset.prefetch_related('post_comments')
+    if ADD_COMMENTS_TO_POST:
+        post_comments = PostCommentSerializer(many=True)
 
     class Meta:
         model = Post
