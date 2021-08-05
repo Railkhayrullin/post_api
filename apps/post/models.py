@@ -27,11 +27,12 @@ class Comment(models.Model):
                                blank=True, null=True,
                                related_name='comment_children',
                                on_delete=models.CASCADE)
+    level = models.PositiveIntegerField('уровень вложенности комментария', blank=False, default=0)
     post = models.ForeignKey(Post, verbose_name='пост', related_name='post_comments', on_delete=models.CASCADE)
     created_at = models.DateTimeField('дата создания', auto_now=True)
 
     def __str__(self):
-        return f"{self.user} - {self.post} - {self.pk}"
+        return f"pk: {self.pk} | статья: {self.post} | уровень: {self.level}"
 
     class Meta:
         verbose_name = 'комментарий'
