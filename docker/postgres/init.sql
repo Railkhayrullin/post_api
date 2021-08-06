@@ -1,0 +1,4 @@
+CREATE USER test_user WITH PASSWORD 'test_pswd';
+
+CREATE DATABASE post;
+GRANT ALL PRIVILEGES ON DATABASE post TO test_user;
