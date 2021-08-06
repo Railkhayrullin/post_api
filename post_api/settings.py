@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'apps.post.apps.PostConfig',
     'apps.api.apps.ApiConfig',
+    'psycopg2',
 ]
 
 MIDDLEWARE = [
@@ -83,11 +84,11 @@ WSGI_APPLICATION = 'post_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'post',
         'USER': 'test_user',
         'PASSWORD': 'test_pswd',
-        'HOST': '127.0.0.1',
+        'HOST': 'postgresdb',
         'PORT': '5432',
     }
 }
